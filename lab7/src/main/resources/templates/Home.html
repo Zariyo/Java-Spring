@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>All users</title>
+</head>
+<body>
+    <h2> User id:</h2>
+    <div th:text="${user.id}"></div>
+    <h2> User Name:</h2>
+    <div th:text="${user.name}"></div>
+    <h2> User age:</h2>
+    <div th:text="${user.age}"></div>
+    <h2> Days since registration:</h2>
+    <div th:text="${datediff}"></div>
+
+</body>
+</html>
