@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Get Furniture by Manufacturer</title>
+</head>
+<body>
+<h1>Get Furniture by Manufacturer</h1>
+<form action="#" th:object="${manufacturer}" th:action="@{/furniture/manufacturer}" method="get">
+    <label for="manufacturer">Manufacturer:</label>
+    <input type="text" id="manufacturer" name="manufacturer" th:field="*{name}"/>
+    <br>
+    <button type="submit">Submit</button>
+</form>
+<p th:if="${furnitureList != null}">
+<div th:each="furniture : ${furnitureList}">
+    Furniture: <span th:text="${furniture.name}"></span> <br>
+    Material: <span th:text="${furniture.material}"></span> <br>
+    Price: <span th:text="${furniture.price}"></span>
+</div>
+</p>
+</body>
+</html>
