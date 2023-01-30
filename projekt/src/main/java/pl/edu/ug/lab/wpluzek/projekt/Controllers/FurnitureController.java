@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Furniture;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.FurnitureRepository;
+import pl.edu.ug.lab.wpluzek.projekt.Repositories.ManufacturerRepository;
 
 import java.util.List;
 
@@ -19,28 +20,34 @@ public class FurnitureController {
     @Autowired
     private FurnitureRepository furnitureRepository;
 
+    @Autowired
+    private ManufacturerRepository manufacturerRepository;
+
     @GetMapping
-    public Iterable<Furniture> getAllFurniture() {
-        return furnitureRepository.findAll();
-    }
-
-    @GetMapping("/manufacturer/{manufacturerName}")
-    public ModelAndView getFurnitureByManufacturer(@PathVariable String manufacturerName, Model model) {
-        List<Furniture> furnitureList = furnitureRepository.findByManufacturerName(manufacturerName);
+    public ModelAndView getAllFurniture(Model model) {
+        List<Furniture> furnitureList = (List<Furniture>) furnitureRepository.findAll();
         model.addAttribute("furnitureList", furnitureList);
-        return new ModelAndView("GetFurnitureByManufacturer");
+        return new ModelAndView("furniture/GetFurnitureList");
     }
 
+    @GetMapping("/add")
+    public ModelAndView showAddFurnitureForm(Model model) {
+        model.addAttribute("furniture", new Furniture());
+        model.addAttribute("manufacturers", manufacturerRepository.findAll());
+        return new ModelAndView("furniture/AddFurniture");
+    }
+
+    @PostMapping("/add")
+    public String addFurniture(@ModelAttribute Furniture furniture) {
+        furnitureRepository.save(furniture);
+        return "furniture_added";
+    }
 
     @GetMapping("/{id}")
-    public Furniture getFurnitureById(@PathVariable Long id) {
-        return furnitureRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Furniture not found with id " + id));
-    }
-
-    @PostMapping
-    public Furniture createFurniture(@Validated @RequestBody Furniture furniture) {
-        return furnitureRepository.save(furniture);
+    public ModelAndView getFurnitureDetails(@PathVariable Long id, Model model) {
+        Furniture furniture = furnitureRepository.findById(id).orElse(null);
+        model.addAttribute("furniture", furniture);
+        return new ModelAndView("furniture/FurnitureDetails");
     }
 
     @PutMapping("/{id}")

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Show manufacturers</title>
+</head>
+<body>
+<h1>Show manufacturers</h1>
+<p th:if="${manufacturersList != null}">
+<div th:each="manufacturer : ${manufacturersList}">
+    Manufacturer: <a th:href="@{/manufacturer/{name}(name=${manufacturer.name})}" th:text="${manufacturer.name}"></a> <br>
+    <button class="btn-danger" th:attr="data-name=${manufacturer.name}">Delete</button>
+    <a th:href="@{/manufacturer/{name}/edit(name=${manufacturer.name})}">Edit</a>
+</div>
+</p>
+<a th:href="@{/manufacturer/add}">Add new manufacturer</a>
+
+<script>
+  document.querySelectorAll('.btn-danger').forEach(function(button) {
+    button.addEventListener('click', function() {
+      if (confirm('Are you sure you want to delete this manufacturer?')) {
+        var name = button.getAttribute('data-name');
+        fetch('/manufacturer/' + name, {
+          method: 'DELETE'
+        }).then(function() {
+          // reload the page to update the list of manufacturers
+          location.reload();
+        });
+      }
+    });
+  });
+</script>
+
+</body>
+</html>

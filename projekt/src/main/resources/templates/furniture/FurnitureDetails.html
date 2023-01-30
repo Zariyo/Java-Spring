@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Furniture Details</title>
+</head>
+<body>
+<h1>Furniture Details</h1>
+<p th:if="${furniture != null}">
+  Name: <span th:text="${furniture.name}"></span> <br>
+  Material: <span th:text="${furniture.material}"></span> <br>
+  Price: <span th:text="${furniture.price}"></span> <br>
+  Manufacturer: <span th:text="${furniture.manufacturer.name}"></span>
+</p>
+</body>
+</html>

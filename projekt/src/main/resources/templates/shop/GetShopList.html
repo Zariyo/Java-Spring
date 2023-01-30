@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Shop List</title>
+</head>
+<body>
+<h1>Shop List</h1>
+<div th:if="${shopsList != null}">
+  <div th:each="shop : ${shopsList}">
+    <a th:href="@{/shop/{id}(id=${shop.id})}" th:text="${shop.name}"></a>
+  </div>
+</div>
+<div th:if="${shopsList == null}">
+  <p>No shops found</p>
+</div>
+</body>
+</html>

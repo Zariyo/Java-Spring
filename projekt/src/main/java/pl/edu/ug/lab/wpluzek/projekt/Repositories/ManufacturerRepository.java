@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface ManufacturerRepository extends CrudRepository<Manufacturer, Long> {
     List<Manufacturer> findById(long id);
-    List<Manufacturer> findByName(Date date);
+    Manufacturer findByName(String name);
 
 }

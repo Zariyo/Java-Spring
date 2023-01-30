@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Manufacturer Details</title>
+</head>
+<body>
+<h1>Manufacturer Details</h1>
+<div th:if="${manufacturer != null}">
+    <p>Name: <span th:text="${manufacturer.name}"></span></p>
+    <p>Address: <span th:text="${manufacturer.address}"></span></p>
+    <p>Email: <span th:text="${manufacturer.email}"></span></p>
+</div>
+<h2>Furniture made by this manufacturer</h2>
+<div th:if="${furnitureList != null}">
+    <div th:each="furniture : ${furnitureList}">
+        <p>Name: <span th:text="${furniture.name}"></span></p>
+        <p>Material: <span th:text="${furniture.material}"></span></p>
+        <p>Price: <span th:text="${furniture.price}"></span></p>
+    </div>
+</div>
+<div th:if="${furnitureList == null}">
+    <p>No furniture found for this manufacturer</p>
+</div>
+<div th:if="${manufacturer == null}">
+    <p>Manufacturer not found</p>
+</div>
+
+</body>
+</html>

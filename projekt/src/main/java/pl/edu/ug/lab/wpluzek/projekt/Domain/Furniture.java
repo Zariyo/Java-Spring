@@ -17,6 +17,10 @@ public class Furniture {
         this.manufacturer = manufacturer;
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -47,10 +51,9 @@ public class Furniture {
     private String material;
     private double price;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name = "furniture_shop", joinColumns = @JoinColumn(name = "furniture_id"),
-            inverseJoinColumns = @JoinColumn(name = "shop_id"))
+    @ManyToMany(mappedBy = "availableFurniture")
     private List<Shop> soldAt;
+
 
     public List<Shop> getSoldAt() {
         return soldAt;
