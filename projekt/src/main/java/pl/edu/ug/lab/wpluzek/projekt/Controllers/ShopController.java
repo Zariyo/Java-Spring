@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Furniture;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Shop;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.FurnitureRepository;
@@ -44,9 +45,16 @@ public class ShopController {
     }
 
     @PostMapping("/add")
-    public String addShop(@ModelAttribute Shop shop) {
+    public RedirectView addShop(@ModelAttribute Shop shop) {
         shopRepository.save(shop);
-        return "shop_added";
+        return new RedirectView("/shop");
+    }
+
+    @GetMapping("/{id}/addFurniture")
+    public ModelAndView addFurnitureForm(Model model){
+        List<Furniture> furnitures = (List<Furniture>) furnitureRepository.findAll();
+        model.addAttribute(furnitures);
+        return new ModelAndView("shop/AddFurniture");
     }
 
     @PutMapping("/addFurniture")

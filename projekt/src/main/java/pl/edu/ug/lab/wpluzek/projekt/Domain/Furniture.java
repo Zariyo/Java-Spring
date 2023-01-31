@@ -51,7 +51,7 @@ public class Furniture {
     private String material;
     private double price;
 
-    @ManyToMany(mappedBy = "availableFurniture")
+    @ManyToMany(mappedBy = "availableFurniture", fetch = FetchType.EAGER)
     private List<Shop> soldAt;
 
 

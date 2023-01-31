@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+    <link th:href = "@{/styles.css}" rel="stylesheet" type="text/css">
     <title>Manufacturer Details</title>
 </head>
 <body>
+<a th:href="@{/}">Home</a>
+<a href="javascript:history.back()">Go back</a>
+
 <h1>Manufacturer Details</h1>
 <div th:if="${manufacturer != null}">
     <p>Name: <span th:text="${manufacturer.name}"></span></p>

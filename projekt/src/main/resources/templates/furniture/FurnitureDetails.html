@@ -1,15 +1,25 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <link th:href = "@{/styles.css}" rel="stylesheet" type="text/css">
   <title>Furniture Details</title>
 </head>
 <body>
+<a th:href="@{/}">Home</a>
+<a href="javascript:history.back()">Go back</a>
 <h1>Furniture Details</h1>
 <p th:if="${furniture != null}">
   Name: <span th:text="${furniture.name}"></span> <br>
   Material: <span th:text="${furniture.material}"></span> <br>
   Price: <span th:text="${furniture.price}"></span> <br>
-  Manufacturer: <span th:text="${furniture.manufacturer.name}"></span>
+  Manufacturer: <span th:text="${furniture.manufacturer.name}"></span><br>
+  Sold at:
+<ul>
+  <li th:each="shop : ${furniture.soldAt}" th:with="shopUrl=@{/shop/{id}(id=${shop.id})}">
+    <a th:href="${shopUrl}" th:text="${shop.name}"></a>
+  </li>
+</ul>
+
 </p>
 </body>
 </html>

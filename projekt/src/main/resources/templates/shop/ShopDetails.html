@@ -1,17 +1,21 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <link th:href = "@{/styles.css}" rel="stylesheet" type="text/css">
   <title>Shop Details</title>
 </head>
 <body>
 <h1>Shop Details</h1>
+<a th:href="@{/}">Home</a>
+<a href="javascript:history.back()">Go back</a>
+
 <div th:if="${shop != null}">
   <p>Name: <span th:text="${shop.name}"></span></p>
   <p>Address: <span th:text="${shop.address}"></span></p>
   <h2>Available Furniture</h2>
   <div th:if="${shop.availableFurniture != null}">
     <div th:each="furniture : ${shop.availableFurniture}">
-      <p>Name: <span th:text="${furniture.name}"></span></p>
+      <p>Name: <a th:href="@{/furniture/{furnitureId}(furnitureId=${furniture.id})}" th:text="${furniture.name}"></a></p>
       <p>Material: <span th:text="${furniture.material}"></span></p>
       <p>Price: <span th:text="${furniture.price}"></span></p>
       <p>Manufacturer: <span th:text="${furniture.manufacturer.name}"></span></p>

@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
+  <link th:href = "@{/styles.css}" rel="stylesheet" type="text/css">
+
   <title>Add Furniture</title>
 </head>
 <body>
 <h1>Add Furniture</h1>
+<a href="javascript:history.back()">Go back</a>
+
 <form action="#" th:object="${furniture}" th:action="@{/furniture/add}" method="post">
   <label for="name">Name:</label>
   <input type="text" id="name" name="name" th:field="*{name}"/>
