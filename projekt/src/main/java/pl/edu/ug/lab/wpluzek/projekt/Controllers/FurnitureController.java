@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Furniture;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.FurnitureRepository;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.ManufacturerRepository;
@@ -38,9 +39,9 @@ public class FurnitureController {
     }
 
     @PostMapping("/add")
-    public String addFurniture(@ModelAttribute Furniture furniture) {
+    public RedirectView addFurniture(@ModelAttribute Furniture furniture) {
         furnitureRepository.save(furniture);
-        return "furniture_added";
+        return new RedirectView("/furniture");
     }
 
     @GetMapping("/{id}")

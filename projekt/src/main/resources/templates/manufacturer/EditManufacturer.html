@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Add Manufacturer</title>
+    <title>Edit Manufacturer</title>
 </head>
 <body>
-<h1>Add Manufacturer</h1>
-<form th:action="@{/manufacturer/{name}(name=${manufacturer.name})}" th:object="${manufacturer}" method="put">
-    <input type="hidden" name="_method" value="put">
+<h1>Edit Manufacturer</h1>
+<form id="manufacturer-form" th:action="@{/manufacturer/{name}(name=${manufacturer.name})}" th:object="${manufacturer}">
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" th:field="*{name}"/>
     <br>
@@ -16,8 +15,48 @@
     <label for="email">Email:</label>
     <input type="text" id="email" name="email" th:field="*{email}"/>
     <br>
-    <button type="submit">Submit</button>
+    <button id = "submit-button" type="submit">Submit</button>
 </form>
+
+
+<script>
+
+document.querySelector("#submit-button").addEventListener("click", function(event) {
+    event.preventDefault();
+    form = document.querySelector("#manufacturer-form");
+
+    const name = form.elements.name.value;
+    const address = form.elements.address.value;
+    const email = form.elements.email.value;
+    const data = { name, address, email };
+
+    const url = new URL(window.location.href);
+    const oldName = url.pathname.split('/')[2];
+    console.log('/manufacturer/' + oldName + '/edit')
+    fetch('/manufacturer/' + oldName, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        console.log(response);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        if (response.redirected) {
+            window.location.href = response.url;
+        }
+        return response.json();
+    })
+    .catch(error => {
+    window.location.href = "/manufacturer";
+        console.error('There was a problem with the fetch operation:', error);
+    });
+});
+
+</script>
 
 </body>
 </html>
