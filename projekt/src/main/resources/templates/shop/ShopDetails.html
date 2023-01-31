@@ -8,7 +8,6 @@
 <h1>Shop Details</h1>
 <a th:href="@{/}">Home</a>
 <a href="javascript:history.back()">Go back</a>
-
 <div th:if="${shop != null}">
   <p>Name: <span th:text="${shop.name}"></span></p>
   <p>Address: <span th:text="${shop.address}"></span></p>
@@ -21,7 +20,10 @@
       <p>Manufacturer: <span th:text="${furniture.manufacturer.name}"></span></p>
     </div>
   </div>
+  <a th:href="@{/shop/{shopId}/addFurniture(shopId=${shop.id})}">Add furniture</a>
 </div>
 <div th:if="${shop == null}">
   <p>Shop not found</p>
 </div>
+</body>
+</html>

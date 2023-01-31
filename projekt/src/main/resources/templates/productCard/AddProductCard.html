@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link th:href = "@{/styles.css}" rel="stylesheet" type="text/css">
+    <title>Add Product Card</title>
+</head>
+<body>
+<h1>Add Product Card</h1>
+<a href="javascript:history.back()">Go back</a>
+
+<p>Adding product card for: <span th:text="${relatedFurniture.name}"></span></p>
+
+<form th:action="@{/productCard/add}" th:object="${productCard}" method="post">
+    <label for="modelNumber">Model Number:</label>
+    <input type="text" id="modelNumber" name="modelNumber" th:field="*{modelNumber}"/>
+    <br>
+    <label for="materialsUsed">Materials Used:</label>
+    <input type="text" id="materialsUsed" name="materialsUsed" th:field="*{materialsUsed}"/>
+    <br>
+    <label for="warrantyPeriod">Warranty Period:</label>
+    <input type="text" id="warrantyPeriod" name="warrantyPeriod" th:field="*{warrantyPeriod}"/>
+    <br>
+    <label for="height">Height:</label>
+    <input type="text" id="height" name="height" th:field="*{height}"/>
+    <br>
+    <label for="width">Width:</label>
+    <input type="text" id="width" name="width" th:field="*{width}"/>
+    <br>
+    <label for="length">Length:</label>
+    <input type="text" id="length" name="length" th:field="*{length}"/>
+    <br>
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

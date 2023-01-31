@@ -35,31 +35,31 @@ public class HomeController {
 
     }
 
-    @GetMapping("/loadDefaults")
-    public RedirectView loadDefaults(Model model) {
-        Manufacturer ikea = new Manufacturer();
-        ikea.setName("ikea");
-        ikea.setEmail("ikea@reply.com");
-        ikea.setAddress("ikea Street");
-        manufacturerRepository.save(ikea);
-        Furniture sofa = new Furniture();
-        sofa.setManufacturer(ikea);
-        sofa.setMaterial("Skóra");
-        sofa.setName("Sofa skórzana");
-        sofa.setPrice(300);
+//    @GetMapping("/loadDefaults")
+//    public RedirectView loadDefaults(Model model) {
+//        Manufacturer ikea = new Manufacturer();
+//        ikea.setName("ikea");
+//        ikea.setEmail("ikea@reply.com");
+//        ikea.setAddress("ikea Street");
+//        manufacturerRepository.save(ikea);
+//        Furniture sofa = new Furniture();
+//        sofa.setManufacturer(ikea);
+//        sofa.setMaterial("Skóra");
+//        sofa.setName("Sofa skórzana");
+//        sofa.setPrice(300);
+////        furnitureRepository.save(sofa);
+//        Shop ikeaShop = new Shop();
+//        ikeaShop.setAddress("ikea Street");
+//        ikeaShop.setName("Ikea");
+//        List<Furniture> furnitureList = new ArrayList<>();
+//        furnitureList.add(sofa);
+//        ikeaShop.setAvailableFurniture(furnitureList);
+//        shopRepository.save(ikeaShop);
+//        List<Shop> shopList = new ArrayList<>();
+//        shopList.add(ikeaShop);
+//        sofa.setSoldAt(shopList);
 //        furnitureRepository.save(sofa);
-        Shop ikeaShop = new Shop();
-        ikeaShop.setAddress("ikea Street");
-        ikeaShop.setName("Ikea");
-        List<Furniture> furnitureList = new ArrayList<>();
-        furnitureList.add(sofa);
-        ikeaShop.setAvailableFurniture(furnitureList);
-        shopRepository.save(ikeaShop);
-        List<Shop> shopList = new ArrayList<>();
-        shopList.add(ikeaShop);
-        sofa.setSoldAt(shopList);
-        furnitureRepository.save(sofa);
-        return new RedirectView("/");
-
-    }
+//        return new RedirectView("/");
+//
+//    }
 }

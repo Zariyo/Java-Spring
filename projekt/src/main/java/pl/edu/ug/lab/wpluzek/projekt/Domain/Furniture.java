@@ -45,11 +45,28 @@ public class Furniture {
         this.price = price;
     }
 
-    @OneToOne
+    @ManyToOne
+    @JoinColumn(name = "manufacturer_id")
     private Manufacturer manufacturer;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_card_id")
+    private ProductCard productCard;
+
+
     private String name;
     private String material;
     private double price;
+
+    private String imageUrl;
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 
     @ManyToMany(mappedBy = "availableFurniture", fetch = FetchType.EAGER)
     private List<Shop> soldAt;

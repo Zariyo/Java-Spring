@@ -22,7 +22,8 @@
     button.addEventListener('click', function() {
       if (confirm('Are you sure you want to delete this piece of furniture?')) {
         var id = button.getAttribute('data-id');
-        fetch('/furniture/' + id, {
+        var url = '/furniture/' + id;
+        fetch(url, {
           method: 'DELETE'
         }).then(function() {
           // reload the page to update the list of furniture

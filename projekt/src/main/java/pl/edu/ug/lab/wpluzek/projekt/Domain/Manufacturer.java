@@ -1,10 +1,8 @@
 package pl.edu.ug.lab.wpluzek.projekt.Domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Manufacturer {
@@ -40,6 +38,8 @@ public class Manufacturer {
         this.email = email;
     }
 
+    @OneToMany(mappedBy = "manufacturer", cascade = CascadeType.REMOVE)
+    private List<Furniture> producedFurniture;
     private String name;
     private String address;
     private String email;

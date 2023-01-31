@@ -67,7 +67,7 @@ public class FurnitureController {
     public ResponseEntity<?> deleteFurniture(@PathVariable Long id) {
         return furnitureRepository.findById(id)
                 .map(furniture -> {
-                    furnitureRepository.delete(furniture);
+                    furnitureRepository.deleteById(id);
                     return ResponseEntity.ok().build();
                 }).orElseThrow(() -> new ResourceNotFoundException("Furniture not found with id " + id));
     }

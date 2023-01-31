@@ -51,8 +51,8 @@ public class ShopController {
     }
 
     @GetMapping("/{id}/addFurniture")
-    public ModelAndView addFurnitureForm(Model model){
-        List<Furniture> furnitures = (List<Furniture>) furnitureRepository.findAll();
+    public ModelAndView addFurnitureForm(Model model, @PathVariable Long id){
+        List<Furniture> furnitures = (List<Furniture>) shopRepository.findNewFurniture(id);
         model.addAttribute(furnitures);
         return new ModelAndView("shop/AddFurniture");
     }
@@ -69,6 +69,12 @@ public class ShopController {
         Furniture furniture = furnitureRepository.findById(furnitureId).get();
         shop.getAvailableFurniture().remove(furniture);
         return shopRepository.save(shop);
+    }
+
+    @DeleteMapping("/{id}")
+    public RedirectView deleteShop(@PathVariable Long id) {
+        shopRepository.deleteById(id);
+        return new RedirectView("/shop");
     }
 
 

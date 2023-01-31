@@ -10,11 +10,29 @@
 <div th:if="${shopsList != null}">
   <div th:each="shop : ${shopsList}">
     <a th:href="@{/shop/{id}(id=${shop.id})}" th:text="${shop.name}"></a>
+    <button class="btn-danger" th:attr="data-id=${shop.id}">Delete</button>
+    <br>
   </div>
 </div>
 <div th:if="${shopsList == null}">
   <p>No shops found</p>
 </div>
 <a href="/shop/add">Add Shop</a>
+
+<script>
+  document.querySelectorAll('.btn-danger').forEach(function(button) {
+    button.addEventListener('click', function() {
+      if (confirm('Are you sure you want to delete this shop?')) {
+        var id = button.getAttribute('data-id');
+        fetch('/shop/' + id, {
+          method: 'DELETE'
+        }).then(function() {
+          // reload the page to update the list of shops
+          location.reload();
+        });
+      }
+    });
+  });
+</script>
 </body>
 </html>
