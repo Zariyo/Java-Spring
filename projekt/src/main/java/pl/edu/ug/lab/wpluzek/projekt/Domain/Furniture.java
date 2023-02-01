@@ -1,5 +1,7 @@
 package pl.edu.ug.lab.wpluzek.projekt.Domain;
 
+import com.sun.istack.NotNull;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -49,16 +51,29 @@ public class Furniture {
     @JoinColumn(name = "manufacturer_id")
     private Manufacturer manufacturer;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "product_card_id")
     private ProductCard productCard;
 
 
+    @NotNull
     private String name;
+
+    @NotNull
     private String material;
+
+    @NotNull
     private double price;
 
     private String imageUrl;
+
+    public ProductCard getProductCard() {
+        return productCard;
+    }
+
+    public void setProductCard(ProductCard productCard) {
+        this.productCard = productCard;
+    }
 
     public String getImageUrl() {
         return imageUrl;

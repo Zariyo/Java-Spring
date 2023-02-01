@@ -38,10 +38,15 @@ public class Manufacturer {
         this.email = email;
     }
 
-    @OneToMany(mappedBy = "manufacturer", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "manufacturer", cascade = CascadeType.REMOVE, fetch = FetchType.EAGER)
     private List<Furniture> producedFurniture;
     private String name;
     private String address;
+
+    public List<Furniture> getProducedFurniture() {
+        return producedFurniture;
+    }
+
     private String email;
 }
 

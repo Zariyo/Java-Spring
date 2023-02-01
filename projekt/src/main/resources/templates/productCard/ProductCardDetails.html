@@ -1,10 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <link th:href = "@{/styles.css}" rel="stylesheet" type="text/css">
+    <title>Product Card Details</title>
 </head>
 <body>
-
+<h1>Product Card Details</h1>
+<a th:href="@{/}">Home</a>
+<p>Details for Product Card with Model Number: <span th:text="${productCard.modelNumber}"></span></p>
+<ul>
+    <li>Materials Used: <span th:text="${productCard.materialsUsed}"></span></li>
+    <li>Warranty Period: <span th:text="${productCard.warrantyPeriod}"></span></li>
+    <li>Height: <span th:text="${productCard.height}"></span></li>
+    <li>Width: <span th:text="${productCard.width}"></span></li>
+    <li>Length: <span th:text="${productCard.length}"></span></li>
+</ul>
 </body>
 </html>

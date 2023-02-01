@@ -1,7 +1,11 @@
 package pl.edu.ug.lab.wpluzek.projekt.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +16,18 @@ import pl.edu.ug.lab.wpluzek.projekt.Domain.Manufacturer;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Shop;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.FurnitureRepository;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.ShopRepository;
+import java.util.Properties;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import javax.transaction.Transactional;
 import java.util.List;
+
+
 
 @RestController
 @RequestMapping("/shop")
@@ -55,17 +68,71 @@ public class ShopController {
 
     @GetMapping("/{id}/addFurniture")
     public ModelAndView addFurnitureForm(Model model, @PathVariable Long id){
+        Shop shop = shopRepository.findById(id).orElse(null);
         List<Furniture> furnitures = (List<Furniture>) shopRepository.findNewFurniture(id);
         model.addAttribute(furnitures);
+        if(shop == null){
+            throw new ResourceNotFoundException("Shop not found with id: " + id);
+        }
+        model.addAttribute(shop);
         return new ModelAndView("shop/AddFurniture");
     }
 
-    @PutMapping("/addFurniture")
-    public Shop addFurniture(@RequestBody Shop shop, @RequestParam Long furnitureId) {
-        Furniture furniture = furnitureRepository.findById(furnitureId).get();
-        shop.getAvailableFurniture().add(furniture);
-        return shopRepository.save(shop);
+    @PostMapping("/{shopId}/addFurniture")
+    public ModelAndView addFurniture(@PathVariable long shopId, @RequestParam List<Long> furnitureIds, Model model) {
+        Shop shop = shopRepository.findById(shopId);
+
+        for (Long furnitureId : furnitureIds) {
+            Furniture furniture = furnitureRepository.findById(furnitureId).orElse(null);
+            shop.getAvailableFurniture().add(furniture);
+        }
+        shopRepository.save(shop);
+        model.addAttribute(shop);
+        return new ModelAndView("shop/ShopDetails");
     }
+
+    @GetMapping("/{id}/sendEmail")
+    public String sendEmail(@PathVariable long id, Model model, @RequestParam("email") String email) {
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost("smtp.gmail.com");
+        mailSender.setPort(587);
+
+        mailSender.setUsername("wpluzek.uglab.test@gmail.com");
+        mailSender.setPassword("sabcpkdxrebowjok");
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.debug", "true");
+
+        Shop shop = shopRepository.findById(id);
+        if (shop == null) {
+            return "redirect:/shop/{id}";
+        }
+
+        StringBuilder emailBody = new StringBuilder();
+        emailBody.append("Shop Name: " + shop.getName() + "\n");
+        emailBody.append("\nAvailable Furniture:\n");
+        for (Furniture furniture : shop.getAvailableFurniture()) {
+            emailBody.append("Name: " + furniture.getName() + "\n");
+            emailBody.append("Material: " + furniture.getMaterial() + "\n");
+            emailBody.append("Price: " + furniture.getPrice() + "\n");
+            emailBody.append("Manufacturer: " + furniture.getManufacturer().getName() + "\n");
+            emailBody.append("\n");
+        }
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom("wpluzek.uglab.test@gmail.com");
+        message.setTo(email);
+        message.setSubject("Shop Details");
+        message.setText(emailBody.toString());
+
+        mailSender.send(message);
+
+        return "redirect:/shop/{id}";
+    }
+
 
     @PutMapping("/removeFurniture")
     public Shop removeFurniture(@RequestBody Shop shop, @RequestParam Long furnitureId) {

@@ -10,10 +10,10 @@
 
 <form id="shop-form">
   <label for="name">Name:</label>
-  <input type="text" id="name" name="name" th:value="${shop.name}"/>
+  <input type="text" id="name" name="name" th:value="${shop.name}" required />
   <br>
   <label for="address">Address:</label>
-  <input type="text" id="address" name="address" th:value="${shop.address}"/>
+  <input type="text" id="address" name="address" th:value="${shop.address}" required />
   <br>
   <button id="submit-button" type="submit">Save Changes</button>
 </form>

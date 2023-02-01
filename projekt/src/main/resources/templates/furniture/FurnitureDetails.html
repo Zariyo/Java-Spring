@@ -19,7 +19,12 @@
     <a th:href="${shopUrl}" th:text="${shop.name}"></a>
   </li>
 </ul>
-
+</p>
+<p th:if="${furniture.productCard != null}">
+  <a th:href="@{/furniture/{furnitureId}/productCard(furnitureId=${furniture.id})}" th:text="'View Product Card'"></a>
+</p>
+<p th:if="${furniture.productCard == null}">
+  <a th:href="@{/furniture/{furnitureId}/productCard/add(furnitureId=${furniture.id})}" th:text="'Create Product Card'"></a>
 </p>
 </body>
 </html>

@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Furniture;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Manufacturer;
+import pl.edu.ug.lab.wpluzek.projekt.Domain.Shop;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.FurnitureRepository;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.ManufacturerRepository;
+import pl.edu.ug.lab.wpluzek.projekt.Repositories.ShopRepository;
 
 import java.util.List;
 
@@ -22,6 +24,9 @@ public class ManufacturerController {
     private FurnitureRepository furnitureRepository;
     @Autowired
     private ManufacturerRepository manufacturerRepository;
+
+    @Autowired
+    private ShopRepository shopRepository;
 
     @GetMapping
     public ModelAndView getAllManufacturers(Model model) {
@@ -88,7 +93,14 @@ public class ManufacturerController {
         if (manufacturer == null) {
             throw new ResourceNotFoundException("Manufacturer not found with name " + name);
         }
-        manufacturerRepository.delete(manufacturer);
+        for (Furniture furniture : manufacturer.getProducedFurniture()){
+            for (Shop shop : furniture.getSoldAt()) {
+                shop.getAvailableFurniture().remove(furniture);
+                shopRepository.save(shop);
+            }
+            furnitureRepository.delete(furniture);
+        }
+        manufacturerRepository.deleteById(manufacturer.getId());
         return ResponseEntity.ok().build();
     }
 

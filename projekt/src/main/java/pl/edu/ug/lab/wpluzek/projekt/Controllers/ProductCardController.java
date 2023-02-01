@@ -17,50 +17,61 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/productCard")
+@RequestMapping("/furniture/{furnitureId}/productCard")
 public class ProductCardController {
 
     @Autowired
     private ProductCardRepository productCardRepository;
-    // Assuming you have the repository for the related furniture as well.
     @Autowired
     private FurnitureRepository furnitureRepository;
 
-    @GetMapping("/add/{relatedFurnitureId}")
-    public ModelAndView showAddProductCardForm(@PathVariable Long relatedFurnitureId, Model model) {
-        Optional<Furniture> relatedFurniture = furnitureRepository.findById(relatedFurnitureId);
+    @GetMapping("/add")
+    public ModelAndView showAddProductCardForm(@PathVariable Long furnitureId, Model model) {
+        Optional<Furniture> relatedFurniture = furnitureRepository.findById(furnitureId);
         relatedFurniture.ifPresent(furniture -> model.addAttribute("relatedFurniture", furniture));
         model.addAttribute("productCard", new ProductCard());
         return new ModelAndView("productCard/AddProductCard");
     }
 
-    @PostMapping("/add/{relatedFurnitureId}")
-    public ModelAndView addProductCard(@PathVariable Long relatedFurnitureId, @ModelAttribute ProductCard productCard, Model model) {
-        Furniture relatedFurniture = furnitureRepository.findById(relatedFurnitureId).orElse(null);
+    @PostMapping("/add")
+    public ModelAndView addProductCard(@PathVariable Long furnitureId, @ModelAttribute ProductCard productCard, Model model) {
+        Furniture relatedFurniture = furnitureRepository.findById(furnitureId).orElse(null);
+        if(relatedFurniture == null){
+            throw new ResourceNotFoundException("No furniture found with id " + furnitureId);
+        }
         productCard.setRelatedFurniture(relatedFurniture);
         productCardRepository.save(productCard);
+        relatedFurniture.setProductCard(productCard);
+        furnitureRepository.save(relatedFurniture);
+        model.addAttribute("productCard", productCard);
+        return new ModelAndView("productCard/ProductCardDetails");
+    }
+
+    @GetMapping
+    public ModelAndView getProductCard(@PathVariable Long furnitureId, Model model) {
+        Furniture relatedFurniture = furnitureRepository.findById(furnitureId).orElse(null);
+        if(relatedFurniture == null){
+            throw new ResourceNotFoundException("No furniture found with id " + furnitureId);
+        }
+        ProductCard productCard = relatedFurniture.getProductCard();
         model.addAttribute("productCard", productCard);
         return new ModelAndView("productCard/ProductCardDetails");
     }
 
 
 
-    @GetMapping("/{id}")
-    public ModelAndView getProductCardDetails(@PathVariable Long id, Model model) {
-        ProductCard productCard = productCardRepository.findById(id).orElse(null);
-        model.addAttribute("productCard", productCard);
-        return new ModelAndView("productCard/ProductCardDetails");
-    }
-
-    @PutMapping("/{id}")
-    public ProductCard updateProductCard(@PathVariable Long id, @Validated @RequestBody ProductCard productCardRequest) {
-        return productCardRepository.findById(id)
-                .map(productCard -> {
-                    productCard.setModelNumber(productCardRequest.getModelNumber());
-                    productCard.setMaterialsUsed(productCardRequest.getMaterialsUsed());
-                    productCard.setWarrantyPeriod(productCardRequest.getWarrantyPeriod());
-                    return productCardRepository.save(productCard);
-                }).orElseThrow(() -> new ResourceNotFoundException("Product Card not found with id " + id));
+    @PutMapping
+    public ProductCard updateProductCard(@PathVariable Long furnitureId, @Validated @RequestBody ProductCard productCardRequest) {
+        Furniture furniture = furnitureRepository.findById(furnitureId).orElse(null);
+        if (furniture == null) {
+            throw new ResourceNotFoundException("Furniture not found with id " + furnitureId);
+        }
+        long productCardId = furniture.getProductCard().getId();
+        ProductCard productCard = productCardRepository.findById(productCardId);
+        productCard.setModelNumber(productCardRequest.getModelNumber());
+        productCard.setMaterialsUsed(productCardRequest.getMaterialsUsed());
+        productCard.setWarrantyPeriod(productCardRequest.getWarrantyPeriod());
+        return productCardRepository.save(productCard);
     }
 }
 

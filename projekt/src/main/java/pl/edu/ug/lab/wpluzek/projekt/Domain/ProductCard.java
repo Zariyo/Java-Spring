@@ -10,6 +10,10 @@ public class ProductCard {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    public Long getId() {
+        return id;
+    }
+
     @OneToOne(mappedBy = "productCard")
     private Furniture relatedFurniture;
 

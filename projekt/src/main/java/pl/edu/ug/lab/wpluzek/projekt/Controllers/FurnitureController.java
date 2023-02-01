@@ -10,8 +10,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Furniture;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Manufacturer;
+import pl.edu.ug.lab.wpluzek.projekt.Domain.Shop;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.FurnitureRepository;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.ManufacturerRepository;
+import pl.edu.ug.lab.wpluzek.projekt.Repositories.ShopRepository;
 
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,9 @@ public class FurnitureController {
 
     @Autowired
     private ManufacturerRepository manufacturerRepository;
+
+    @Autowired
+    private ShopRepository shopRepository;
 
     @GetMapping
     public ModelAndView getAllFurniture(Model model) {
@@ -41,8 +46,10 @@ public class FurnitureController {
     }
 
     @PostMapping("/add")
-    public ModelAndView addFurniture(@ModelAttribute Furniture furniture) {
+    public ModelAndView addFurniture(@ModelAttribute @Validated Furniture furniture, Model model) {
         furnitureRepository.save(furniture);
+        List<Furniture> furnitureList = (List<Furniture>) furnitureRepository.findAll();
+        model.addAttribute(furnitureList);
         return new ModelAndView("furniture/GetFurnitureList");
     }
 
@@ -86,6 +93,10 @@ public class FurnitureController {
     public ResponseEntity<?> deleteFurniture(@PathVariable Long id) {
         return furnitureRepository.findById(id)
                 .map(furniture -> {
+                    for (Shop shop : furniture.getSoldAt()) {
+                        shop.getAvailableFurniture().remove(furniture);
+                        shopRepository.save(shop);
+                    }
                     furnitureRepository.deleteById(id);
                     return ResponseEntity.ok().build();
                 }).orElseThrow(() -> new ResourceNotFoundException("Furniture not found with id " + id));

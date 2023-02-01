@@ -10,13 +10,13 @@
 
 <form id="manufacturer-form" th:action="@{/manufacturer/{name}(name=${manufacturer.name})}" th:object="${manufacturer}">
     <label for="name">Name:</label>
-    <input type="text" id="name" name="name" th:field="*{name}"/>
+    <input type="text" id="name" name="name" th:field="*{name}" required />
     <br>
     <label for="address">Address:</label>
-    <input type="text" id="address" name="address" th:field="*{address}"/>
+    <input type="text" id="address" name="address" th:field="*{address}" required />
     <br>
     <label for="email">Email:</label>
-    <input type="text" id="email" name="email" th:field="*{email}"/>
+    <input type="text" id="email" name="email" th:field="*{email}" required />
     <br>
     <button id = "submit-button" type="submit">Submit</button>
 </form>

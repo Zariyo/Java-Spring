@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <link th:href = "@{/styles.css}" rel="stylesheet" type="text/css">
   <title>Furniture Selection</title>
 </head>
@@ -10,7 +8,7 @@
 <h1>Select Your Furniture</h1>
 <a href="javascript:history.back()">Go back</a>
 
-<form method="post" action="#">
+<form th:action="@{/shop/{shopId}/addFurniture(shopId=${shop.id})}" method="post" >
   <table>
     <thead>
     <tr>
@@ -18,11 +16,12 @@
       <th>Name</th>
       <th>Description</th>
       <th>Price</th>
+      <th>Manufacturer</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="furniture : ${furnitureList}">
-      <td><input type="checkbox" name="selectedFurniture" th:value="${furniture.id}" /></td>
+      <td><input type="checkbox" name="furnitureIds" th:value="${furniture.id}" /></td>
       <td th:text="${furniture.name}"></td>
       <td th:text="${furniture.material}"></td>
       <td th:text="${furniture.price}"></td>

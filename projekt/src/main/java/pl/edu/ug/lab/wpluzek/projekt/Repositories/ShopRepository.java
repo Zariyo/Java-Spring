@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface ShopRepository extends CrudRepository<Shop, Long> {
     Shop findById(long id);
-    List<Shop> findByName(Date date);
+    Shop findByName(String name);
 
     @Query(value = "SELECT f from Furniture f WHERE f NOT IN (SELECT sf from Shop s JOIN s.availableFurniture sf WHERE s.id = :shop_id)")
     List<Furniture> findNewFurniture(@Param("shop_id") long shop_id);

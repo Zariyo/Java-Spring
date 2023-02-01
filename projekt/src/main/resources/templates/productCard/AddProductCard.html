@@ -10,7 +10,7 @@
 
 <p>Adding product card for: <span th:text="${relatedFurniture.name}"></span></p>
 
-<form th:action="@{/productCard/add}" th:object="${productCard}" method="post">
+<form th:action="@{/furniture/{id}/productCard/add(id=${relatedFurniture.id})}" th:object="${productCard}" method="post">
     <label for="modelNumber">Model Number:</label>
     <input type="text" id="modelNumber" name="modelNumber" th:field="*{modelNumber}"/>
     <br>

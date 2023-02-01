@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface ProductCardRepository extends CrudRepository<ProductCard, Long> {
-    List<ProductCard> findById(long id);
+    ProductCard findById(long id);
     List<ProductCard> findByModelNumber(String modelNumber);
 
 
