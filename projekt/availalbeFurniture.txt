@@ -1,0 +1,4 @@
+Name: Sofa skórzana
+Material: Skóra
+Manufacturer: ikea
+

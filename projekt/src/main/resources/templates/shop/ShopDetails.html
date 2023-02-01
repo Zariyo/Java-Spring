@@ -21,10 +21,13 @@
     </div>
   </div>
   <a th:href="@{/shop/{shopId}/addFurniture(shopId=${shop.id})}">Add furniture</a><br>
+  <div>Send mail with available furniture</div>
   <form action="#" th:action="@{/shop/{shopId}/sendEmail(shopId=${shop.id})}" method="get">
     <input type="email" name="email" placeholder="Enter email address">
     <button type="submit">Send Email</button>
   </form>
+  <div>Save available furniture to file</div>
+  <a th:href="@{/shop/{shopId}/saveFurniture(shopId=${shop.id})}">Save</a><br>
 </div>
 <div th:if="${shop == null}">
   <p>Shop not found</p>

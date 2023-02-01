@@ -3,6 +3,8 @@ package pl.edu.ug.lab.wpluzek.projekt.Controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
@@ -16,6 +18,9 @@ import pl.edu.ug.lab.wpluzek.projekt.Domain.Manufacturer;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Shop;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.FurnitureRepository;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.ShopRepository;
+
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Properties;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -92,7 +97,7 @@ public class ShopController {
     }
 
     @GetMapping("/{id}/sendEmail")
-    public String sendEmail(@PathVariable long id, Model model, @RequestParam("email") String email) {
+    public RedirectView sendEmail(@PathVariable long id, Model model, @RequestParam("email") String email) {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
@@ -108,7 +113,7 @@ public class ShopController {
 
         Shop shop = shopRepository.findById(id);
         if (shop == null) {
-            return "redirect:/shop/{id}";
+            return new RedirectView("/shop/" + id);
         }
 
         StringBuilder emailBody = new StringBuilder();
@@ -130,7 +135,7 @@ public class ShopController {
 
         mailSender.send(message);
 
-        return "redirect:/shop/{id}";
+        return new RedirectView("/shop/" + id);
     }
 
 
@@ -164,6 +169,39 @@ public class ShopController {
         shop.setAddress(shopRequest.getAddress());
         shopRepository.save(shop);
         return new ModelAndView("/shop/GetShopList");
+    }
+
+    @GetMapping("/{id}/saveFurniture")
+    public ResponseEntity<String> saveFurniture(@PathVariable("id") Long id) {
+        try {
+            List<Furniture> availableFurniture = getAvailableFurniture(id);
+            writeToFile(availableFurniture, "availalbeFurniture.txt");
+            return new ResponseEntity<>("Furniture saved successfully", HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>("Error saving furniture: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private List<Furniture> getAvailableFurniture(Long id) {
+        Shop shop = shopRepository.findById(id).orElse(null);
+        if (shop == null){
+            throw new ResourceNotFoundException("Shop not found");
+        }
+        return shop.getAvailableFurniture();
+    }
+
+    private void writeToFile(List<Furniture> availableFurniture, String filePath) {
+        try (FileWriter fileWriter = new FileWriter(filePath)) {
+            for (Furniture furniture : availableFurniture) {
+                fileWriter.write("Name: " + furniture.getName() + '\n');
+                fileWriter.write("Material: " + furniture.getMaterial() + '\n');
+                fileWriter.write("Manufacturer: " + furniture.getManufacturer().getName() + '\n');
+                fileWriter.write(System.lineSeparator());
+            }
+            fileWriter.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
