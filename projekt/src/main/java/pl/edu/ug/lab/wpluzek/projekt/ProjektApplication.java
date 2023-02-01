@@ -102,6 +102,29 @@ public class ProjektApplication {
         kanapa.setSoldAt(shopList2);
         furnitureRepository.save(kanapa);
 
+            Manufacturer abra = new Manufacturer();
+            abra.setName("abra");
+            abra.setEmail("abra@reply.com");
+            abra.setAddress("abra Street");
+            manufacturerRepository.save(abra);
+            Furniture chair = new Furniture();
+            chair.setManufacturer(abra);
+            chair.setMaterial("steel");
+            chair.setName("Metalowe krzesło");
+            chair.setPrice(120);
+            furnitureRepository.save(chair);
+            Shop abraShop = new Shop();
+            abraShop.setAddress("abra Street");
+            abraShop.setName("abra");
+            List<Furniture> furnitureList3 = new ArrayList<>();
+            furnitureList3.add(chair);
+            abraShop.setAvailableFurniture(furnitureList3);
+            shopRepository.save(abraShop);
+            List<Shop> shopList3 = new ArrayList<>();
+            shopList3.add(abraShop);
+            chair.setSoldAt(shopList3);
+            furnitureRepository.save(chair);
+
 
 	}
 
