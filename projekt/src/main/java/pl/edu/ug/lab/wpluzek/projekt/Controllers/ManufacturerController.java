@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Furniture;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Manufacturer;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.FurnitureRepository;
@@ -61,15 +60,15 @@ public class ManufacturerController {
     }
 
     @PostMapping("/add")
-    public RedirectView addManufacturer(@ModelAttribute Manufacturer manufacturer) {
+    public ModelAndView addManufacturer(@ModelAttribute Manufacturer manufacturer) {
         System.out.println(manufacturer.getName());
         manufacturerRepository.save(manufacturer);
-        return new RedirectView("/manufacturer");
+        return new ModelAndView("manufacturer/GetManufacturerList");
     }
 
 
     @PutMapping("/{name}")
-    public RedirectView updateManufacturer(@PathVariable String name, @Validated @RequestBody Manufacturer manufacturerRequest) {
+    public ModelAndView updateManufacturer(@PathVariable String name, @Validated @RequestBody Manufacturer manufacturerRequest) {
         Manufacturer manufacturer = manufacturerRepository.findByName(name);
         if (manufacturer == null) {
             throw new ResourceNotFoundException("Manufacturer not found with name " + name);
@@ -78,7 +77,7 @@ public class ManufacturerController {
         manufacturer.setEmail(manufacturerRequest.getEmail());
         manufacturer.setAddress(manufacturerRequest.getAddress());
         manufacturerRepository.save(manufacturer);
-        return new RedirectView("/manufacturer");
+        return new ModelAndView("manufacturer/GetManufacturerList");
     }
 
 

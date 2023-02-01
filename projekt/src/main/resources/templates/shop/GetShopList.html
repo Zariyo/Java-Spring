@@ -10,6 +10,7 @@
 <div th:if="${shopsList != null}">
   <div th:each="shop : ${shopsList}">
     <a th:href="@{/shop/{id}(id=${shop.id})}" th:text="${shop.name}"></a>
+    <a th:href="@{/shop/{id}/edit(id=${shop.id})}">Edit</a>
     <button class="btn-danger" th:attr="data-id=${shop.id}">Delete</button>
     <br>
   </div>
@@ -18,7 +19,6 @@
   <p>No shops found</p>
 </div>
 <a href="/shop/add">Add Shop</a>
-
 <script>
   document.querySelectorAll('.btn-danger').forEach(function(button) {
     button.addEventListener('click', function() {

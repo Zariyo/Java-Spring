@@ -1,11 +1,14 @@
 package pl.edu.ug.lab.wpluzek.projekt.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Furniture;
+import pl.edu.ug.lab.wpluzek.projekt.Domain.Manufacturer;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Shop;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.FurnitureRepository;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.ShopRepository;
@@ -45,9 +48,9 @@ public class ShopController {
     }
 
     @PostMapping("/add")
-    public RedirectView addShop(@ModelAttribute Shop shop) {
+    public ModelAndView addShop(@ModelAttribute Shop shop) {
         shopRepository.save(shop);
-        return new RedirectView("/shop");
+        return new ModelAndView("shop/GetShopList");
     }
 
     @GetMapping("/{id}/addFurniture")
@@ -72,9 +75,28 @@ public class ShopController {
     }
 
     @DeleteMapping("/{id}")
-    public RedirectView deleteShop(@PathVariable Long id) {
+    public ModelAndView deleteShop(@PathVariable Long id) {
         shopRepository.deleteById(id);
-        return new RedirectView("/shop");
+        return new ModelAndView("shop/GetShopList");
+    }
+
+    @GetMapping("/{shopId}/edit")
+    public ModelAndView getShopEditForm(@PathVariable Long shopId, Model model) {
+        Shop shop = shopRepository.findById(shopId).orElse(null);
+        model.addAttribute("shop", shop);
+        return new ModelAndView("shop/EditShop");
+    }
+
+    @PutMapping("/{shopId}/edit")
+    public ModelAndView updateShop(@PathVariable Long shopId, @Validated @RequestBody Shop shopRequest) {
+        Shop shop = shopRepository.findById(shopId).orElse(null);
+        if (shop == null) {
+            throw new ResourceNotFoundException("Shop not found with id " + shopId);
+        }
+        shop.setName(shopRequest.getName());
+        shop.setAddress(shopRequest.getAddress());
+        shopRepository.save(shop);
+        return new ModelAndView("/shop/GetShopList");
     }
 
 

@@ -35,11 +35,12 @@ public class ProductCardController {
     }
 
     @PostMapping("/add/{relatedFurnitureId}")
-    public RedirectView addProductCard(@PathVariable Long relatedFurnitureId, @ModelAttribute ProductCard productCard) {
+    public ModelAndView addProductCard(@PathVariable Long relatedFurnitureId, @ModelAttribute ProductCard productCard, Model model) {
         Furniture relatedFurniture = furnitureRepository.findById(relatedFurnitureId).orElse(null);
         productCard.setRelatedFurniture(relatedFurniture);
         productCardRepository.save(productCard);
-        return new RedirectView("/productCard");
+        model.addAttribute("productCard", productCard);
+        return new ModelAndView("productCard/ProductCardDetails");
     }
 
 

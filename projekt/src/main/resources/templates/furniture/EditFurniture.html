@@ -1,0 +1,72 @@
+Here's an HTML template for the Edit Furniture form:
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link th:href = "@{/styles.css}" rel="stylesheet" type="text/css">
+    <title>Edit Furniture</title>
+</head>
+<body>
+<h1>Edit Furniture</h1>
+<a href="javascript:history.back()">Go back</a>
+<form id="furniture-form" th:action="@{/furniture/{name}(name=${furniture.name})}" th:object="${furniture}">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" th:field="*{name}"/>
+    <br>
+    <label for="material">Material:</label>
+    <input type="text" id="material" name="material" th:field="*{material}"/>
+    <br>
+    <label for="price">Price:</label>
+    <input type="text" id="price" name="price" th:field="*{price}"/>
+    <br>
+    <label for="manufacturer">Manufacturer:</label>
+    <select id="manufacturer" name="manufacturer" th:field="*{manufacturer}">
+        <option th:each="manufacturer : ${manufacturers}" th:value="${manufacturer.id}" th:text="${manufacturer.name}"></option>
+    </select>
+    <br>
+    <button id = "submit-button" type="submit">Submit</button>
+</form>
+<script>
+
+document.querySelector("#submit-button").addEventListener("click", function(event) {
+    event.preventDefault();
+    form = document.querySelector("#furniture-form");
+    const name = form.elements.name.value;
+    const material = form.elements.material.value;
+    const price = form.elements.price.value;
+    const manufacturerId = form.elements.manufacturer.value;
+    const data = { name, material, price, manufacturerId };
+
+    console.log(data);
+    console.log(manufacturerId);
+
+    const url = new URL(window.location.href);
+    const oldName = url.pathname.split('/')[2];
+    console.log('/furniture/' + oldName)
+
+    console.log(JSON.stringify(data));
+    fetch('/furniture/' + oldName, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        console.log(response);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        if (response.redirected) {
+            window.location.href = response.url;
+        }
+        return response.json();
+    })
+    .catch(error => {
+    window.location.href = "/furniture";
+        console.error('There was a problem with the fetch operation:', error);
+    });
+});
+
+</script>
+</body>
+</html>

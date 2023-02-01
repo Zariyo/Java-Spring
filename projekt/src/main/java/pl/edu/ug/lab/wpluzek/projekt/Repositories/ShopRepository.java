@@ -12,7 +12,7 @@ import java.util.List;
 
 @Repository
 public interface ShopRepository extends CrudRepository<Shop, Long> {
-    List<Shop> findById(long id);
+    Shop findById(long id);
     List<Shop> findByName(Date date);
 
     @Query(value = "SELECT f from Furniture f WHERE f NOT IN (SELECT sf from Shop s JOIN s.availableFurniture sf WHERE s.id = :shop_id)")

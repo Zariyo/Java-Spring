@@ -9,10 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 import pl.edu.ug.lab.wpluzek.projekt.Domain.Furniture;
+import pl.edu.ug.lab.wpluzek.projekt.Domain.Manufacturer;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.FurnitureRepository;
 import pl.edu.ug.lab.wpluzek.projekt.Repositories.ManufacturerRepository;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/furniture")
@@ -39,9 +41,9 @@ public class FurnitureController {
     }
 
     @PostMapping("/add")
-    public RedirectView addFurniture(@ModelAttribute Furniture furniture) {
+    public ModelAndView addFurniture(@ModelAttribute Furniture furniture) {
         furnitureRepository.save(furniture);
-        return new RedirectView("/furniture");
+        return new ModelAndView("furniture/GetFurnitureList");
     }
 
     @GetMapping("/{id}")
@@ -51,16 +53,33 @@ public class FurnitureController {
         return new ModelAndView("furniture/FurnitureDetails");
     }
 
+    @GetMapping("/{id}/edit")
+    public ModelAndView getFurnitureEditForm(@PathVariable Long id, Model model) {
+        Furniture furniture = furnitureRepository.findById(id).orElse(null);
+        List<Manufacturer> manufacturers = (List<Manufacturer>) manufacturerRepository.findAll();
+        model.addAttribute("furniture", furniture);
+        model.addAttribute("manufacturers", manufacturers);
+        return new ModelAndView("furniture/EditFurniture");
+    }
+
     @PutMapping("/{id}")
-    public Furniture updateFurniture(@PathVariable Long id, @Validated @RequestBody Furniture furnitureRequest) {
-        return furnitureRepository.findById(id)
-                .map(furniture -> {
-                    furniture.setManufacturer(furnitureRequest.getManufacturer());
-                    furniture.setName(furnitureRequest.getName());
-                    furniture.setMaterial(furnitureRequest.getMaterial());
-                    furniture.setPrice(furnitureRequest.getPrice());
-                    return furnitureRepository.save(furniture);
-                }).orElseThrow(() -> new ResourceNotFoundException("Furniture not found with id " + id));
+    public ModelAndView updateFurniture(@PathVariable Long id, @RequestBody Map<String, Object> data) {
+
+        String name = (String) data.get("name");
+        String material = (String) data.get("material");
+        double price = Double.parseDouble(data.get("price").toString());
+        Long manufacturerId = Long.valueOf(data.get("manufacturerId").toString());
+
+        Furniture furniture = furnitureRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Furniture not found"));
+        Manufacturer manufacturer = manufacturerRepository.findById(manufacturerId).orElseThrow(() -> new ResourceNotFoundException("Manufacturer not found"));
+
+        furniture.setName(name);
+        furniture.setMaterial(material);
+        furniture.setPrice(price);
+        furniture.setManufacturer(manufacturer);
+        furnitureRepository.save(furniture);
+
+        return new ModelAndView("furniture/GetFurnitureList");
     }
 
     @DeleteMapping("/{id}")

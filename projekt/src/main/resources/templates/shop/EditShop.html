@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+      <html xmlns:th="http://www.thymeleaf.org">
+      <head>
+      <link th:href = "@{/styles.css}" rel="stylesheet" type="text/css">
+      <title>Edit Shop</title>
+</head>
+<body>
+<h1>Edit Shop</h1>
+<a href="javascript:history.back()">Go back</a>
+
+<form id="shop-form">
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name" th:value="${shop.name}"/>
+  <br>
+  <label for="address">Address:</label>
+  <input type="text" id="address" name="address" th:value="${shop.address}"/>
+  <br>
+  <button id="submit-button" type="submit">Save Changes</button>
+</form>
+
+<script>
+document.querySelector("#submit-button").addEventListener("click", function(event) {
+    event.preventDefault();
+    form = document.querySelector("#shop-form");
+    const name = form.elements.name.value;
+    const address = form.elements.address.value;
+    const data = { name, address };
+
+    const url = new URL(window.location.href);
+    const oldName = url.pathname.split('/')[2];
+    console.log('/shop/' + oldName + '/edit')
+
+    fetch('/shop/' + oldName + '/edit', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        if (response.redirected) {
+            window.location.href = response.url;
+        }
+        return response.json();
+    })
+    .catch(error => {
+        window.location.href = "/shop";
+        console.error('There was a problem with the fetch operation:', error);
+    });
+});
+</script>
+
+</body>
+</html>
