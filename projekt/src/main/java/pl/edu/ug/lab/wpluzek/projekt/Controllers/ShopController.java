@@ -102,9 +102,6 @@ public class ShopController {
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        mailSender.setUsername("wpluzek.uglab.test@gmail.com");
-        mailSender.setPassword("sabcpkdxrebowjok");
-
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
